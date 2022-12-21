@@ -1,3 +1,26 @@
+import argparse
+
+
+def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--filename", "-f", required=True)
+    parser.add_argument("--medals", action="store_true", required=False)
+    parser.add_argument("--country",required=False, nargs="*")
+    parser.add_argument("--noc", required=False)
+    parser.add_argument("--year", required=False)
+    parser.add_argument("--total", action="store_true", required=False)
+    parser.add_argument("--overall", action="store_true", required = False)
+    parser.add_argument("_-sport", required=False)
+    parser.add_argument("--output", "-o", required=False)
+    args = parser.parsep_args()
+    if args.medals:
+        task1(args.medals, args.output, args.filename, args.country, args.year, args.noc, args.sport)
+    if args.total:
+        task2(args.total, args.year, args.filename)
+    if args.overall:
+        task3(args.filename,args.country)
+
 
 def task1 (medals, output, filename, country, year, noc, sport):
     gold = 0
@@ -36,3 +59,32 @@ def task1 (medals, output, filename, country, year, noc, sport):
         output_file.close()
 
 
+
+def task2(total, year, filename):
+    all_medals = {}
+    medals_list = ["gold", "silver", "bronze"]
+    with open(filename, "r") as file:
+        for line in file:
+            data = line.strip().split("\t")
+            if data[9] == year and data[14] in medals_list:
+                if data[6] in all_medals:
+                    country_medals = all_medals[data[6]]
+                    if data[14] == "Gold":
+                        country_medals[0] += 1
+                    elif data[14] == "Silver":
+                        country_medals[1] += 1
+                    elif data[14] == "Bronze":
+                        country_medals[2] += 1
+                else:
+                    all_medals[data[6]] = [0, 0, 0]
+                    country_medals = all_medals[data[6]]
+                    if data[14] == "Gold":
+                        country_medals[0] = 1
+                    elif data[14] == "Silver":
+                        country_medals[1] = 1
+                    elif data[14] == "Bronze":
+                        country_medals[2] = 1
+
+    for key in all_medals:
+        count = all_medals[key]
+        print(f"{key}: {count[0]} _ {count[1]} _ {count[2]}")
