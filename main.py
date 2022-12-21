@@ -88,3 +88,24 @@ def task2(total, year, filename):
     for key in all_medals:
         count = all_medals[key]
         print(f"{key}: {count[0]} _ {count[1]} _ {count[2]}")
+def task3 (filename, country):
+    medals ={}
+    best_year = []
+    for i in country:
+        medals[i] = dict()
+    with open(filename, 'r') as file:
+        data = file.readline().split('\t')
+        while len(data) > 1:
+            if data[6] in medals:
+                if data[9] not in medals[data[6]]:
+                    medals[data[6]][data[9]] = 0
+                medals[data[6]][data[9]] += 1
+            data = file.readline().split('\t')
+    for countries in medals:
+        medals_years = medals[countries]
+        all_medals = medals_years.values()
+        max_data = max(all_medals)
+        for year in medals_years:
+            if medals_years[year] == max_data:
+                best_year.append(f'{country}-{year}-{max_data}\n')
+                print(f'{country}-{year}-{max_data}\n')
