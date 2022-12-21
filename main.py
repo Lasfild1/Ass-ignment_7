@@ -35,4 +35,31 @@ def task1 (medals, output, filename, country, year, noc, sport):
     if output_file is not None:
         output_file.close()
 
+def stage_2(total, year, filename):
+    all_medals = {}
+    medals_list = ["gold", "silver", "bronze"]
+    with open(filename, "r") as file:
+        for line in file:
+            data = line.strip().split("\t")
+            if data[9] == year and data[14] in medals_list:
+                if data[6] in all_medals:
+                    country_medals = all_medals[data[6]]
+                    if data[14] == "Gold":
+                        country_medals[0] += 1
+                    elif data[14] == "Silver":
+                        country_medals[1] += 1
+                    elif data[14] == "Bronze":
+                        country_medals[2] += 1
+                else:
+                    all_medals[data[6]] = [0, 0, 0]
+                    country_medals = all_medals[data[6]]
+                    if data[14] == "Gold":
+                        country_medals[0] = 1
+                    elif data[14] == "Silver":
+                        country_medals[1] = 1
+                    elif data[14] == "Bronze":
+                        country_medals[2] = 1
 
+    for key in all_medals:
+        count = all_medals[key]
+        print(f"{key}: {count[0]} _ {count[1]} _ {count[2]}")
