@@ -6,23 +6,23 @@ def main():
 
     parser.add_argument("--filename", "-f", required=True)
     parser.add_argument("--medals", action="store_true", required=False)
-    parser.add_argument("--country",required=False, nargs="*")
+    parser.add_argument("--country", required=False, nargs='*')
     parser.add_argument("--noc", required=False)
     parser.add_argument("--year", required=False)
     parser.add_argument("--total", action="store_true", required=False)
-    parser.add_argument("--overall", action="store_true", required = False)
-    parser.add_argument("_-sport", required=False)
+    parser.add_argument("--overall", action="store_true", required=False)
+    parser.add_argument("--sport", required=False)
     parser.add_argument("--output", "-o", required=False)
-    args = parser.parsep_args()
+    args = parser.parse_args()
     if args.medals:
         task1(args.medals, args.output, args.filename, args.country, args.year, args.noc, args.sport)
     if args.total:
         task2(args.total, args.year, args.filename)
     if args.overall:
-        task3(args.filename,args.country)
+        task3(args.filename, args.country)
 
 
-def task1 (medals, output, filename, country, year, noc, sport):
+def task1(medals, output, filename, country, year, noc, sport):
     gold = 0
     silver = 0
     bronze = 0
@@ -33,8 +33,8 @@ def task1 (medals, output, filename, country, year, noc, sport):
     idx = 0
     print(gold, silver, bronze)
     if output is not None:
-        output_file = open(output, 'wt')
-    with open(filename, 'r') as file:
+        output_file = open(output, "wt")
+    with open(filename, "r") as file:
         for line in file:
             data = line.strip().strip('\t')
             if data[6] == country or data[7] == noc and data[9] == year and data[12] == sport and data[14] in list_medals:
@@ -48,7 +48,7 @@ def task1 (medals, output, filename, country, year, noc, sport):
                 if data[14] == list_medals[2]:
                     bronze += 1
                 if counter <= 10:
-                    first_medalist = ', '.join(medalist)
+                    first_medalist = ", ".join(medalist)
                     print(f'{first_medalist}')
                     print(gold, silver, bronze)
                     print(total)
@@ -62,11 +62,11 @@ def task1 (medals, output, filename, country, year, noc, sport):
 
 def task2(total, year, filename):
     all_medals = {}
-    medals_list = ["gold", "silver", "bronze"]
+    list_medals = ["Gold", "Silver", "Bronze"]
     with open(filename, "r") as file:
         for line in file:
             data = line.strip().split("\t")
-            if data[9] == year and data[14] in medals_list:
+            if data[9] == year and data[14] in list_medals:
                 if data[6] in all_medals:
                     country_medals = all_medals[data[6]]
                     if data[14] == "Gold":
@@ -87,9 +87,9 @@ def task2(total, year, filename):
 
     for key in all_medals:
         count = all_medals[key]
-        print(f"{key}: {count[0]} _ {count[1]} _ {count[2]}")
-def task3 (filename, country):
-    medals ={}
+        print(f"{key}: {count[0]} - {count[1]} - {count[2]}")
+def task3(filename, country):
+    medals = {}
     best_year = []
     for i in country:
         medals[i] = dict()
@@ -102,10 +102,19 @@ def task3 (filename, country):
                 medals[data[6]][data[9]] += 1
             data = file.readline().split('\t')
     for countries in medals:
-        medals_years = medals[countries]
-        all_medals = medals_years.values()
+        medals_by_year = medals[countries]
+        all_medals = medals_by_year.values()
         max_data = max(all_medals)
-        for year in medals_years:
-            if medals_years[year] == max_data:
-                best_year.append(f'{country}-{year}-{max_data}\n')
+        for year in medals_by_year:
+            if medals_by_year[year] == max_data:
+                best_year.append(f"{country}-{year}-{max_data}\n")
                 print(f'{country}-{year}-{max_data}\n')
+
+
+
+if __name__ == '__main__':
+    main()
+
+#python3 main.py --medals --filename Olympic Athletes-athlete_events.csv --noc USA --year 2000 --sport Gymnastics
+#python3 main.py --total --filename Olympic Athletes-athlete_events.csv --year 2000
+#python3 main.py --overall --filename Olympic Athletes-athlete_events.csv --countries China Ukraine
